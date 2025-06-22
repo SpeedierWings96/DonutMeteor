@@ -33,6 +33,8 @@ import meteordevelopment.meteorclient.systems.modules.render.marker.Marker;
 import meteordevelopment.meteorclient.systems.modules.world.Timer;
 import meteordevelopment.meteorclient.systems.modules.world.*;
 import meteordevelopment.meteorclient.utils.Utils;
+
+import static meteordevelopment.meteorclient.systems.modules.Categories.Donut;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.misc.ValueComparableMap;
 import meteordevelopment.meteorclient.utils.misc.input.Input;
@@ -77,6 +79,7 @@ public class Modules extends System<Modules> {
         initRender();
         initWorld();
         initMisc();
+        initDonut();
     }
 
     @Override
@@ -574,5 +577,8 @@ public class Modules extends System<Modules> {
         add(new SoundBlocker());
         add(new Spam());
         add(new Swarm());
+    }
+
+    private void initDonut() {
     }
 }

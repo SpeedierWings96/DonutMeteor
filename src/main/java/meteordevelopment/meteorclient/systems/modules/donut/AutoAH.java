@@ -64,9 +64,9 @@ public class AutoAH extends Module {
         if (autoSell.get()) {
             double highestPrice = getHighestPrice(itemName);
             if (highestPrice > 0) {
-                double sellPrice = highestPrice + (highestPrice * priceMultiplier.get());
+                double sellPrice = highestPrice * priceMultiplier.get();
                 ChatUtils.sendPlayerMsg("/ah sell " + Math.round(sellPrice));
-                info("Selling %s for %d coins (highest: %d, multiplier: %.2fx)", itemName, Math.round(sellPrice), Math.round(highestPrice), priceMultiplier.get());
+                info("Selling %s for %s coins (highest: %s, multiplier: %.2fx)", itemName, formatPrice(sellPrice), formatPrice(highestPrice), priceMultiplier.get());
             } else {
                 error("Could not fetch auction prices for: " + itemName);
             }
@@ -108,6 +108,16 @@ public class AutoAH extends Module {
         } catch (Exception e) {
             error("Failed to fetch auction prices: " + e.getMessage());
             return 0.0;
+        }
+    }
+    
+    private String formatPrice(double price) {
+        if (price >= 1_000_000) {
+            return String.format("%.1fm", price / 1_000_000);
+        } else if (price >= 1_000) {
+            return String.format("%.1fk", price / 1_000);
+        } else {
+            return String.format("%.0f", price);
         }
     }
 }

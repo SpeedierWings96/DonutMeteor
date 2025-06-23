@@ -33,7 +33,6 @@ import meteordevelopment.meteorclient.systems.modules.render.marker.Marker;
 import meteordevelopment.meteorclient.systems.modules.world.Timer;
 import meteordevelopment.meteorclient.systems.modules.world.*;
 import meteordevelopment.meteorclient.systems.modules.donut.AutoAH;
-import meteordevelopment.meteorclient.systems.modules.donut.AutoOrder;
 import meteordevelopment.meteorclient.utils.Utils;
 
 import static meteordevelopment.meteorclient.systems.modules.Categories.Donut;
@@ -583,6 +582,5 @@ public class Modules extends System<Modules> {
 
     private void initDonut() {
         add(new AutoAH());
-        add(new AutoOrder());
     }
 }

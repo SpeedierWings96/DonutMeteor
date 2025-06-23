@@ -58,9 +58,9 @@ public class AutoAH extends Module {
         .name("price-multiplier")
         .description("Multiplier for the reference auction price.")
         .defaultValue(1.0)
-        .min(0.5)
+        .min(0.05)
         .max(10.0)
-        .sliderRange(0.5, 5.0)
+        .sliderRange(0.05, 5.0)
         .decimalPlaces(2)
         .build());
 

@@ -15,6 +15,7 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WWindow;
 import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.systems.config.Config;
+import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -210,8 +211,8 @@ public class ModulesScreen extends TabScreen {
                     }
                 }
 
-                // Ensure empty categories are not shown
-                if (!moduleList.isEmpty()) {
+                // Ensure empty categories are not shown, except for Donut category
+                if (!moduleList.isEmpty() || category == Categories.Donut) {
                     windows.add(createCategory(this, category, moduleList));
                     moduleList.clear();
                 }

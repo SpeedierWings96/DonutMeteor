@@ -16,3 +16,4 @@ logs
 .idea/*
 !.idea/copyright/*
 !.idea/scopes/*
+build_log.txt

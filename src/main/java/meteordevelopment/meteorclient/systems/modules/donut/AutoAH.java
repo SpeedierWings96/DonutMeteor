@@ -16,6 +16,7 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.systems.modules.donut.DonutSMPConstants;
 import meteordevelopment.meteorclient.utils.misc.Names;
 import meteordevelopment.meteorclient.utils.network.Http;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
@@ -112,7 +113,7 @@ public class AutoAH extends Module {
             String sortMode = mode == PriceMode.Highest ? "highest_price" : "lowest_price";
             String jsonBody = "{\"search\":\"" + itemName + "\",\"sort\":\"" + sortMode + "\"}";
             String response = Http.post("https://api.donutsmp.net/v1/auction/list/1")
-                .header("Authorization", "Bearer 9965f7bb27dc4c4c9f748639b733f0bf")
+                .bearer(DonutSMPConstants.API_TOKEN)
                 .bodyJson(jsonBody)
                 .sendString();
             

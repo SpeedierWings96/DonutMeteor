@@ -13,6 +13,7 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.hud.HudElement;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.hud.HudRenderer;
+import meteordevelopment.meteorclient.systems.modules.donut.DonutSMPConstants;
 import meteordevelopment.meteorclient.utils.misc.Names;
 import meteordevelopment.meteorclient.utils.network.Http;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
@@ -269,6 +270,7 @@ public class AuctionHouseHud extends HudElement {
             try {
                 String jsonBody = "{\"search\":\"\",\"sort\":\"" + getSortParameter() + "\"}";
                 String response = Http.post("https://api.donutsmp.net/v1/auction/list/1")
+                    .bearer(DonutSMPConstants.API_TOKEN)
                     .bodyJson(jsonBody)
                     .sendString();
                 

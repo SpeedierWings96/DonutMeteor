@@ -124,13 +124,30 @@ public class AutoAH extends Module {
             JsonArray results = jsonResponse.getAsJsonArray("result");
             
             if (results != null && results.size() > 0) {
-                JsonElement firstResult = results.get(0);
-                if (firstResult.isJsonObject()) {
-                    JsonObject firstItem = firstResult.getAsJsonObject();
-                    if (firstItem.has("price")) {
-                        return firstItem.get("price").getAsDouble();
+                String playerName = mc.player.getName().getString();
+                double bestPrice = 0.0;
+                
+                for (JsonElement result : results) {
+                    if (result.isJsonObject()) {
+                        JsonObject item = result.getAsJsonObject();
+                        if (item.has("price") && item.has("seller")) {
+                            JsonObject seller = item.getAsJsonObject("seller");
+                            if (seller.has("name")) {
+                                String sellerName = seller.get("name").getAsString();
+                                if (!sellerName.equals(playerName)) {
+                                    double price = item.get("price").getAsDouble();
+                                    if (bestPrice == 0.0 || 
+                                        (mode == PriceMode.Highest && price > bestPrice) || 
+                                        (mode == PriceMode.Lowest && price < bestPrice)) {
+                                        bestPrice = price;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+                
+                return bestPrice;
             }
             
             return 0.0;

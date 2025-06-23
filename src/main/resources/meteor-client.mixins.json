@@ -188,7 +188,8 @@
     "WorldChunkMixin",
     "WorldRendererAccessor",
     "WorldRendererMixin",
-    "YggdrasilMinecraftSessionServiceAccessor"
+    "YggdrasilMinecraftSessionServiceAccessor",
+    "HudEditorScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

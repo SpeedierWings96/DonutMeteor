@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
+import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Categories;
@@ -23,6 +24,22 @@ import net.minecraft.item.ItemStack;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class AutoAH extends Module {
+    public enum PriceMode {
+        Highest("Highest"),
+        Lowest("Lowest");
+        
+        private final String title;
+        
+        PriceMode(String title) {
+            this.title = title;
+        }
+        
+        @Override
+        public String toString() {
+            return title;
+        }
+    }
+    
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     
     private final Setting<Boolean> autoSell = sgGeneral.add(new BoolSetting.Builder()
@@ -31,9 +48,15 @@ public class AutoAH extends Module {
         .defaultValue(false)
         .build());
     
+    private final Setting<PriceMode> priceMode = sgGeneral.add(new EnumSetting.Builder<PriceMode>()
+        .name("price-mode")
+        .description("Which price to use as reference for selling.")
+        .defaultValue(PriceMode.Highest)
+        .build());
+    
     private final Setting<Double> priceMultiplier = sgGeneral.add(new DoubleSetting.Builder()
         .name("price-multiplier")
-        .description("Multiplier for the highest auction price.")
+        .description("Multiplier for the reference auction price.")
         .defaultValue(1.0)
         .min(0.1)
         .max(10.0)
@@ -62,11 +85,16 @@ public class AutoAH extends Module {
         String itemName = Names.get(heldItem);
         
         if (autoSell.get()) {
-            double highestPrice = getHighestPrice(itemName);
-            if (highestPrice > 0) {
-                double sellPrice = highestPrice + (highestPrice * priceMultiplier.get());
+            double referencePrice = getItemPrice(itemName, priceMode.get());
+            if (referencePrice > 0) {
+                double sellPrice;
+                if (priceMode.get() == PriceMode.Highest) {
+                    sellPrice = referencePrice + (referencePrice * priceMultiplier.get());
+                } else {
+                    sellPrice = referencePrice - (referencePrice * priceMultiplier.get());
+                }
                 ChatUtils.sendPlayerMsg("/ah sell " + Math.round(sellPrice));
-                info("Selling %s for %d coins (highest: %d, multiplier: %.2fx)", itemName, Math.round(sellPrice), Math.round(highestPrice), priceMultiplier.get());
+                info("Selling %s for %d coins (%s: %d, multiplier: %.2fx)", itemName, Math.round(sellPrice), priceMode.get().toString().toLowerCase(), Math.round(referencePrice), priceMultiplier.get());
             } else {
                 error("Could not fetch auction prices for: " + itemName);
             }
@@ -79,9 +107,10 @@ public class AutoAH extends Module {
         toggle();
     }
     
-    private double getHighestPrice(String itemName) {
+    private double getItemPrice(String itemName, PriceMode mode) {
         try {
-            String jsonBody = "{\"search\":\"" + itemName + "\",\"sort\":\"highest_price\"}";
+            String sortMode = mode == PriceMode.Highest ? "highest_price" : "lowest_price";
+            String jsonBody = "{\"search\":\"" + itemName + "\",\"sort\":\"" + sortMode + "\"}";
             String response = Http.post("https://api.donutsmp.net/v1/auction/list/1")
                 .header("Authorization", "Bearer 9965f7bb27dc4c4c9f748639b733f0bf")
                 .bodyJson(jsonBody)

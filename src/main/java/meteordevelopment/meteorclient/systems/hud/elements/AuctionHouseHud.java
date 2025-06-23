@@ -9,11 +9,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import meteordevelopment.meteorclient.events.meteor.MouseButtonEvent;
+import meteordevelopment.meteorclient.eventbus.EventHandler;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.hud.HudElement;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.hud.HudRenderer;
 import meteordevelopment.meteorclient.utils.misc.Names;
+import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
 import meteordevelopment.meteorclient.utils.network.Http;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
@@ -123,6 +126,24 @@ public class AuctionHouseHud extends HudElement {
 
     public AuctionHouseHud() {
         super(INFO);
+    }
+    
+    @EventHandler
+    private void onMouseButton(MouseButtonEvent event) {
+        if (!isActive() || event.action != KeyAction.Press || event.button != 0) return;
+        
+        double mouseX = mc.mouse.getX() * mc.getWindow().getScaleFactor();
+        double mouseY = mc.mouse.getY() * mc.getWindow().getScaleFactor();
+        
+        if (isMouseOverHud(mouseX, mouseY) && hoveredItem != null) {
+            onItemClicked(hoveredItem);
+            event.cancel();
+        }
+    }
+    
+    private boolean isMouseOverHud(double mouseX, double mouseY) {
+        return mouseX >= x && mouseX <= x + getWidth() && 
+               mouseY >= y && mouseY <= y + getHeight();
     }
 
     @Override
@@ -368,10 +389,6 @@ public class AuctionHouseHud extends HudElement {
     }
     
     public boolean handleMouseClick(double mouseX, double mouseY, int button) {
-        if (!isInEditor() && button == 0 && hoveredItem != null) {
-            onItemClicked(hoveredItem);
-            return true;
-        }
         return false;
     }
 
